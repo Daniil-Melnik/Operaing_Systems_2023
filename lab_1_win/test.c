@@ -177,6 +177,90 @@ void move_file_ex() {
     }
 }
 
+void get_file_attributes() {
+    DWORD dwAttrib = GetFileAttributes("C:\\new1\\theTest2_1.txt");
+
+    if(dwAttrib == 0xFFFFFFFF){
+		printf("Error getting attributes.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if(dwAttrib & FILE_ATTRIBUTE_NORMAL){
+		printf("File is a normal file.\n");
+	}
+	if(dwAttrib & FILE_ATTRIBUTE_DIRECTORY){
+		printf("File is a directory.\n") ;
+	}
+	if (dwAttrib & FILE_ATTRIBUTE_DEVICE){
+		printf("File is a device.\n");
+	}
+	if(dwAttrib & FILE_ATTRIBUTE_ARCHIVE){
+		printf("File is an archive.\n");
+	}
+	if(dwAttrib & FILE_ATTRIBUTE_COMPRESSED){
+		printf("File is compressed.\n");
+	}
+	if(dwAttrib & FILE_ATTRIBUTE_HIDDEN){
+		printf("File is hidden.\n");
+	}
+	if(dwAttrib & FILE_ATTRIBUTE_ENCRYPTED){
+		printf("File is encrypted.\n");
+	}
+}
+
+void set_file_attributes() {
+     DWORD dwFileAttributes = FILE_ATTRIBUTE_ENCRYPTED | FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN;
+
+     if (SetFileAttributes("C:\\new1\\theTest2_1.txt", dwFileAttributes)) {
+     printf("File attributes altered.\n");
+ }
+}
+
+void get_file_information_by_handle (){
+    if (GetFileInformationByHandle(
+        "C:\\new1\\theTest2_1.txt", // handle of file
+        NULL)
+    ){
+        printf("OK\n");
+    }
+}
+
+void get_file_time() {
+
+    FILETIME ftCreate, ftAccess, ftWrite;
+
+    if (!GetFileTime("C:\\new1\\theTest2_1.txt", &ftCreate, &ftAccess, &ftWrite))
+    {
+        printf("FALSE\n");
+        printf("%s %d\n", "dwHighDateTime :", ftCreate.dwHighDateTime);
+        printf("%s %d\n", "dwLowDateTime :" ,ftCreate.dwLowDateTime);
+    }
+    else {
+        printf("TRUE\n");
+        printf("%s %d\n", "dwHighDateTime :", ftCreate.dwHighDateTime);
+        printf("%s %d\n", "dwLowDateTime :" ,ftCreate.dwLowDateTime);
+    }
+ // need print results for ftAcces and ftWrite
+}
+
+void set_file_time() {
+    FILETIME ftCreate;
+    SYSTEMTIME st;
+
+    GetSystemTime(&st);
+    SystemTimeToFileTime(&st, &ftCreate);
+
+    SetFileTime("C:\\new1\\theTest2_1.txt", &ftCreate, NULL, NULL);
+
+    if (SetFileTime("C:\\new1\\theTest2_1.txt", &ftCreate, NULL, NULL))
+    {
+        printf("FALSE\n");
+
+    }
+}
+
+
+
 int main()
 {
     // wchar_t *disk = get_logical_drive_strings();
@@ -198,7 +282,17 @@ int main()
 
     // move_file();
 
-    move_file_ex();
+    // move_file_ex();
+
+    // get_file_attributes();
+
+    // set_file_attributes();
+
+    // get_file_information_by_handle();
+
+    get_file_time();
+
+    // set_file_time();
 
     return 0;
 }

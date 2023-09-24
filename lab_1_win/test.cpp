@@ -1,6 +1,5 @@
-#include <iostream>
+#include <stdio.h>
 #include <fileapi.h>
-using namespace std;
 
 void get_logical_drivers() {
     int n;
@@ -13,7 +12,7 @@ void get_logical_drivers() {
 		if( n == 1 )
 		{
 			dd[0] =  char(65+i); dd[1] = ':'; dd[2] = '\\'; dd[3] = 0;
-			cout << "Available disk drives (GetLogicalDrives) : " << dd << endl;
+			printf("%s%s%s", "Available disk drives (GetLogicalDrives) : ", dd, '\n');
 		}
 	}
 }
@@ -26,8 +25,8 @@ void get_logical_drive_strings() {
     disk=disks;
     while (*disk)
     {
-        cout << "Available disk drives (GetLogicalDriveStringsW) : ";
-        wprintf(L"%s%s", disk, ":\\");
+        printf("%s", "Available disk drives (GetLogicalDriveStringsW) : ");
+        wprintf(L"%s%s", disk, ":\\\n");
         disk=disk+wcslen(disk)+1;
     }
 }

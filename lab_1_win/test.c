@@ -75,14 +75,53 @@ void get_volume_information(){
 	else printf("Not Present (GetVolumeInformation)");
 }
 
+void get_disk_free_space(){
+
+    LPCWSTR pszDrive = NULL;
+    BOOL test, fResult;
+
+    int lpFreeBytesAvailable, lpTotalNumberOfBytes, lpTotalNumberOfFreeBytes;
+    DWORD dwSectPerClust, dwBytesPerSect, dwFreeClusters, dwTotalClusters;
+
+    // If the function succeeds, the return value is nonzero. If the function fails, the return value is 0 (zero).
+    test = GetDiskFreeSpaceEx(
+    "C:\\",
+    (PULARGE_INTEGER)&lpFreeBytesAvailable,
+    (PULARGE_INTEGER)&lpTotalNumberOfBytes,
+    (PULARGE_INTEGER)&lpTotalNumberOfFreeBytes
+    );
+    // printf("Drive to be checked: %s\n", pszDrive);
+    printf("\nUsing GetDiskFreeSpaceEx()...\n");
+    // Check the return value
+    printf("The return value: %d, error code: %d\n", test, GetLastError());
+    printf("Total number of free bytes available for user-caller: %ul\n", lpFreeBytesAvailable);
+    printf("Total number of bytes available for user: %ul\n", lpTotalNumberOfBytes);\
+    // Just straight to the free bytes result
+    printf("Total number of free bytes on disk: %ul\n", lpTotalNumberOfFreeBytes);
+    // If the function succeeds, the return value is nonzero. If the function fails, the return value is 0 (zero).
+    fResult = GetDiskFreeSpace(pszDrive,
+    &dwSectPerClust,
+    &dwBytesPerSect,
+    &dwFreeClusters,
+    &dwTotalClusters);
+    printf("\nUsing GetDiskFreeSpace()...\n");
+    printf("The return value: %d, error code: %d\n", fResult, GetLastError());
+    printf("Sector per cluster = %ul\n", dwSectPerClust);
+    printf("Bytes per sector = %ul\n", dwBytesPerSect);
+    printf("Free cluster = %ul\n", dwFreeClusters);
+    printf("Total cluster = %ul\n", dwTotalClusters);
+    // Using GetDiskFreeSpace() need some calculation for the free bytes on disk
+    printf("Total free bytes = %ul\n", (dwFreeClusters*dwSectPerClust*dwBytesPerSect));
+}
+
 int main()
 {
     // wchar_t *disk = get_logical_drive_strings();
     /* get_logical_drivers(); */
     // get_drive_type();
+    // get_volume_information();
 
-    get_volume_information();
-
+    get_disk_free_space();
     return 0;
 }
 

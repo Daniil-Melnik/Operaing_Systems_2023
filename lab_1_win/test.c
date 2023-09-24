@@ -115,7 +115,7 @@ void get_disk_free_space(){
 }
 
 void create_directory() {
-    if (CreateDirectory("C:\\new",NULL))
+    if (CreateDirectory("C:\\new2",NULL))
         printf("success create directory\n");
 	else
         printf("error create directory\n");
@@ -126,6 +126,55 @@ void remove_directory() {
         printf("success remove directory\n");
 	else
         printf("error remove directory\n");
+}
+
+void create_file() {
+    const LPSECURITY_ATTRIBUTES default_security = NULL;
+
+    HANDLE ourHandle = CreateFile(
+        "C:\\new2\\theTest2.txt",
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ,
+        default_security,
+        CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL
+        );
+    if (ourHandle){
+        printf("file created success\n");
+    }
+    else {
+        printf("file error creating");
+    }
+
+    CloseHandle(ourHandle);
+}
+
+void copy_file(){
+    //will fail if file already exists
+	if(CopyFile("C:\\new2\\theTest2.txt", "C:\\new2\\theTest2_2.txt", TRUE)){
+		printf("File copied.\n");
+	} else {
+		printf("File not copied.\n");
+	}
+}
+
+void move_file() {
+    if (MoveFile("C:\\new2\\theTest2_1.txt", "C:\\new1\\theTest2_1.txt")){
+        printf("File moved\n");
+    }
+    else {
+        printf("File not moved\n");
+    }
+}
+
+void move_file_ex() {
+    if (MoveFileEx("C:\\new2\\theTest2_2.txt", "C:\\new1\\theTest2_2.txt", MOVEFILE_COPY_ALLOWED)){
+        printf("File moved_ex\n");
+    }
+    else{
+        printf("File not moved_ex\n");
+    }
 }
 
 int main()
@@ -140,9 +189,16 @@ int main()
 
     // get_disk_free_space();
 
-    //create_directory();
-    //remove_directory();
+    // create_directory();
+    // remove_directory();
 
+    // create_file();
+
+    // copy_file();
+
+    // move_file();
+
+    move_file_ex();
 
     return 0;
 }

@@ -99,7 +99,7 @@ void get_disk_free_space(){
     // Just straight to the free bytes result
     printf("Total number of free bytes on disk: %ul\n", lpTotalNumberOfFreeBytes);
     // If the function succeeds, the return value is nonzero. If the function fails, the return value is 0 (zero).
-    fResult = GetDiskFreeSpace(pszDrive,
+    fResult = GetDiskFreeSpace("C:\\",
     &dwSectPerClust,
     &dwBytesPerSect,
     &dwFreeClusters,
@@ -114,14 +114,36 @@ void get_disk_free_space(){
     printf("Total free bytes = %ul\n", (dwFreeClusters*dwSectPerClust*dwBytesPerSect));
 }
 
+void create_directory() {
+    if (CreateDirectory("C:\\new",NULL))
+        printf("success create directory\n");
+	else
+        printf("error create directory\n");
+}
+
+void remove_directory() {
+    if (RemoveDirectory("C:\\new"))
+        printf("success remove directory\n");
+	else
+        printf("error remove directory\n");
+}
+
 int main()
 {
     // wchar_t *disk = get_logical_drive_strings();
-    /* get_logical_drivers(); */
+
+    // get_logical_drivers();
+
     // get_drive_type();
+
     // get_volume_information();
 
-    get_disk_free_space();
+    // get_disk_free_space();
+
+    //create_directory();
+    //remove_directory();
+
+
     return 0;
 }
 

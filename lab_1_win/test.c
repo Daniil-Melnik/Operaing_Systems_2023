@@ -36,7 +36,7 @@ wchar_t *get_logical_drive_strings() {
     return disk;
 }
 
-void drivetype () {
+void get_drive_type () {
     int d;
     d = GetDriveType( (LPCTSTR) "D:\\" );
     if( d == DRIVE_UNKNOWN ) printf("UNKNOWN");
@@ -48,11 +48,41 @@ void drivetype () {
     if( d == DRIVE_RAMDISK ) printf("DRIVE RAMDISK");
 }
 
+void get_volume_information(){
+    char VolumeNameBuffer[100];
+	char FileSystemNameBuffer[100];
+	unsigned long VolumeSerialNumber;
+	LPDWORD MaximumComponentLength;
+
+	BOOL GetVolumeInformationFlag = GetVolumeInformationA(
+	"C:\\",
+	VolumeNameBuffer,
+	100,
+	&VolumeSerialNumber,
+	&MaximumComponentLength,
+	NULL,
+	FileSystemNameBuffer,
+	100
+	);
+
+	if(GetVolumeInformationFlag != 0)
+	{
+		printf("%s %s %s", "Volume Name is " , VolumeNameBuffer, "\n");
+		printf("%s %d %s", "Volume Serial Number is ", VolumeSerialNumber, "\n");
+		printf("%s %s %s", "File System is ", FileSystemNameBuffer, "\n");
+		printf("%s %d %s", "Maximum component length is ", MaximumComponentLength, "\n");
+	}
+	else printf("Not Present (GetVolumeInformation)");
+}
+
 int main()
 {
     // wchar_t *disk = get_logical_drive_strings();
     /* get_logical_drivers(); */
-    drivetype();
+    // get_drive_type();
+
+    get_volume_information();
+
     return 0;
 }
 

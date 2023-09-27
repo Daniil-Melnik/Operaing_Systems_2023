@@ -38,7 +38,7 @@ wchar_t *get_logical_drive_strings() {
 
 void get_drive_type () {
     int d;
-    d = GetDriveType( (LPCTSTR) "D:\\" );
+    d = GetDriveType( (LPCTSTR) "C:\\" );
     if( d == DRIVE_UNKNOWN ) printf("UNKNOWN");
     if( d == DRIVE_NO_ROOT_DIR ) printf("DRIVE NO ROOT DIR");
     if( d == DRIVE_REMOVABLE ) printf("DRIVE REMOVABLE");

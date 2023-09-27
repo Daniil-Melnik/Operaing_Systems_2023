@@ -222,6 +222,7 @@ void copyFile() {
 }
 
 void moveFile() {
+    //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 	cout << "¬ведите путь к файлу (латинскими буквами, без пробелов с названием самого файла): ";
@@ -243,17 +244,17 @@ void moveFile() {
 	}
 }
 
-/*
+
 void fileInfo() {
+
 	wchar_t fileName[250];
 	char fileCharName[250];
 	cout << "¬ведите им€ файла (латинскими буквами, без пробелов): ";
 	cin >> fileCharName;
-	mbstowcs(fileName, fileCharName, 250);
 	ostringstream tempStringStream;
 
 	DWORD fileAttributes;
-	if (fileAttributes = GetFileAttributes(fileName) == INVALID_FILE_ATTRIBUTES) {
+	if (fileAttributes = GetFileAttributes((LPSTR)fileCharName) == INVALID_FILE_ATTRIBUTES) {
 		cout << "ќшибка: " << GetLastError();
 	}
 		tempStringStream << "0x";
@@ -271,16 +272,16 @@ void fileInfo() {
 			cout << "FILE_ATTRIBUTE_ENCRYPTED:\nA file or directory that is encrypted. For a file, all data streams in the file are encrypted. For a directory, encryption is the default for newly created files and subdirectories.\n--\n";
 		if (fileAttributes & FILE_ATTRIBUTE_HIDDEN)
 			cout << "FILE_ATTRIBUTE_HIDDEN:\nThe file or directory is hidden. It is not included in an ordinary directory listing.\n--\n";
-		if (fileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM)
+		/*if (fileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM)
 			cout << "FILE_ATTRIBUTE_INTEGRITY_STREAM:\nThe directory or user data stream is configured with integrity (only supported on ReFS volumes). It is not included in an ordinary directory listing. The integrity setting persists \
-			 with the file if it's renamed. If a file is copied the destination file will have integrity set if either the source file or destination directory have integrity set.\n--\n";
+			 with the file if it's renamed. If a file is copied the destination file will have integrity set if either the source file or destination directory have integrity set.\n--\n";*/
 		if (fileAttributes & FILE_ATTRIBUTE_NORMAL)
 			cout << "FILE_ATTRIBUTE_NORMAL:\nA file that does not have other attributes set. This attribute is valid only when used alone.\n";
 		if (fileAttributes & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
 			cout << "FILE_ATTRIBUTE_NOT_CONTENT_INDEXED:\nThe file or directory is not to be indexed by the content indexing service.\n";
-		if (fileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA)
+		/*if (fileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA)
 			cout << "FILE_ATTRIBUTE_NO_SCRUB_DATA:\nThe user data stream not to be read by the background data integrity scanner (AKA scrubber). When set on a directory it only provides inheritance. This flag is only supported on\
-				Storage Spaces and ReFS volumes. It is not included in an ordinary directory listing.\n--\n";
+				Storage Spaces and ReFS volumes. It is not included in an ordinary directory listing.\n--\n";*/
 		if (fileAttributes & FILE_ATTRIBUTE_OFFLINE)
 			cout << "FILE_ATTRIBUTE_OFFLINE:\nThe data of a file is not available immediately. This attribute indicates that the file data is physically moved to offline storage. This attribute is used by Remote Storage,\
 				 which is the hierarchical storage management software. Applications should not arbitrarily change this attribute.\n--\n";
@@ -328,13 +329,13 @@ void fileInfo() {
 		FileTimeToSystemTime(&fileAccessedTime, &fileAccessedSystemTime);
 		FileTimeToSystemTime(&fileWritedTime, &fileWritedSystemTime);
 
-		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileCreatedSystemTime, NULL, createdLocalDate, 255);
-		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileAccessedSystemTime, NULL, accessedLocalDate, 255);
-		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileWritedSystemTime, NULL, writedLocalDate, 255);
+		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileCreatedSystemTime, NULL, (LPSTR)createdLocalDate, 255);
+		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileAccessedSystemTime, NULL, (LPSTR)accessedLocalDate, 255);
+		GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &fileWritedSystemTime, NULL, (LPSTR)writedLocalDate, 255);
 
-		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileCreatedSystemTime, NULL, createdLocalTime, 255);
-		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileAccessedSystemTime, NULL, accessedLocalTime, 255);
-		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileWritedSystemTime, NULL, writedLocalTime, 255);
+		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileCreatedSystemTime, NULL, (LPSTR)createdLocalTime, 255);
+		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileAccessedSystemTime, NULL, (LPSTR)accessedLocalTime, 255);
+		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileWritedSystemTime, NULL, (LPSTR)writedLocalTime, 255);
 
 		cout << "¬рем€ создани€: " << fileCreatedSystemTime.wDay << "." << fileCreatedSystemTime.wMonth << "."
 			<< fileCreatedSystemTime.wYear << " " << fileCreatedSystemTime.wHour << ":"
@@ -355,7 +356,9 @@ void fileInfo() {
 	CloseHandle(hFile);
 	fclose(pfile);
 }
+
 void changeFileAttributes() {
+
 	char fileName[250];
 	cout << "¬ведите им€ файла (латинскими буквами, без пробелов): ";
 	cin >> fileName;
@@ -423,8 +426,7 @@ void changeCreationTime() {
 	char fileCharName[250];
 	cout << "¬ведите им€ файла: ";
 	cin >> fileCharName;
-	mbstowcs(filename, fileCharName, 250);
-	HANDLE hFile = CreateFile(filename, FILE_WRITE_ATTRIBUTES, 0, NULL, OPEN_EXISTING, 0, NULL);
+	HANDLE hFile = CreateFile((LPSTR)fileCharName, FILE_WRITE_ATTRIBUTES, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	FILETIME fileTime;
 	SYSTEMTIME systemTimeNow;
@@ -439,7 +441,7 @@ void changeCreationTime() {
 
 	CloseHandle(hFile);
 }
-*/
+
 int menu();
 
 int main() {
@@ -498,7 +500,10 @@ int main() {
 //    deleteFolder();
 //    createFile();
 //    copyFile();
-    moveFile();
+//    moveFile();
+//    fileInfo();
+//    changeFileAttributes();
+//    changeCreationTime();
 	return 0;
 }
 

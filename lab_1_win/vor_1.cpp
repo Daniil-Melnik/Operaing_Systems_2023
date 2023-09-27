@@ -138,11 +138,10 @@ void showDriveInfo() {
 	unsigned __int64 total = totalClusters * sectorsPerCluster / 1024 * bytesPerSector / 1024;
 	cout << endl << "Дисковое пространство (свободное/всего): " << free << " / " << total << " MiB\n";
 }
-/*
 
 bool isDirectoryExists(const wchar_t *filename)
 {
-	DWORD dwFileAttributes = GetFileAttributes(filename);
+	DWORD dwFileAttributes = GetFileAttributes((LPSTR)filename);
 	if (dwFileAttributes == 0xFFFFFFFF)
 		return false;
 	return dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -153,11 +152,10 @@ void createFolder() {
 	char directoryCharName[250];
 	cout << "Введите название папки (латинскими буквами, без пробелов): ";
 	cin >> directoryCharName;
-	mbstowcs(directoryName, directoryCharName, 250);
 	// 1 имя каталога
 	// 2 атрибуты безопасности
 	// вернет число
-	if (CreateDirectory(directoryName, NULL) != 0)
+	if (CreateDirectory((LPSTR)directoryCharName, NULL) != 0)
 		cout << "Папка создана\n";
 	else
 		cout << "Ошибка, папка не создалась!\n";
@@ -168,16 +166,12 @@ void deleteFolder() {
 	char directoryCharName[250];
 	cout << "Введите название папки (латинскими буквами, без пробелов): ";
 	cin >> directoryCharName;
-	mbstowcs(directoryName, directoryCharName, 250);
-	if (isDirectoryExists(directoryName)) {
-		if (RemoveDirectory(directoryName) != 0)
-			cout << "Папка удалена\n";
-		else
-			cout << "Ошибка, папка не была удалена!\n";
-	}
-	else
-		cout << "Такой папки не существует!\n";
+    if (RemoveDirectory((LPSTR)directoryCharName) != 0)
+        cout << "Папка удалена\n";
+    else
+        cout << "Ошибка, папка не была удалена!\n";
 }
+/*
 void createFile() {
 	wchar_t fileName[250];
 	char fileCharName[250];
@@ -496,8 +490,10 @@ int main() {
 			system("pause");
 	} while (notExit);
 	cin.get();*/
-	showDrivesList();
-	showDriveInfo();
+//	showDrivesList();
+//	showDriveInfo();
+//  createFolder();
+    deleteFolder();
 	return 0;
 }
 

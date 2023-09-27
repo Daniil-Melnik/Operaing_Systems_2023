@@ -246,7 +246,7 @@ void moveFile() {
 
 
 void fileInfo() {
-
+    //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
 	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
@@ -358,7 +358,7 @@ void fileInfo() {
 }
 
 void changeFileAttributes() {
-
+    //OK
 	char fileName[250];
 	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
 	cin >> fileName;
@@ -422,6 +422,7 @@ void changeFileAttributes() {
 }
 
 void changeCreationTime() {
+    //OK
 	wchar_t filename[250];
 	char fileCharName[250];
 	cout << "Введите имя файла: ";
@@ -446,7 +447,7 @@ int menu();
 
 int main() {
 	setlocale(0, ".1251");
-	/*int notExit;
+	int notExit;
 
 	do {
 		switch (notExit = menu())
@@ -493,17 +494,7 @@ int main() {
 		if (notExit)
 			system("pause");
 	} while (notExit);
-	cin.get();*/
-//	  showDrivesList();
-//	  showDriveInfo();
-//    createFolder();
-//    deleteFolder();
-//    createFile();
-//    copyFile();
-//    moveFile();
-//    fileInfo();
-//    changeFileAttributes();
-//    changeCreationTime();
+	cin.get();
 	return 0;
 }
 

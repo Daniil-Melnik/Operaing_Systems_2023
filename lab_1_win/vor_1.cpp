@@ -148,6 +148,7 @@ bool isDirectoryExists(const wchar_t *filename)
 }
 
 void createFolder() {
+    //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
 	cout << "Введите название папки (латинскими буквами, без пробелов): ";
@@ -162,6 +163,7 @@ void createFolder() {
 }
 
 void deleteFolder() {
+    //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
 	cout << "Введите название папки (латинскими буквами, без пробелов): ";
@@ -171,13 +173,13 @@ void deleteFolder() {
     else
         cout << "Ошибка, папка не была удалена!\n";
 }
-/*
+
 void createFile() {
+    //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
 	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
 	cin >> fileCharName;
-	mbstowcs(fileName, fileCharName, 250);
 	// 1 имя файла
 	// 2 режим доступа
 	// 3 совместный доступ
@@ -190,14 +192,17 @@ void createFile() {
 	// сбрасывает существующие атрибуты и объединяет, заданные параметром dwFlagsAndAttributes
 	// атрибуты файла и флажки, с FILE_ATTRIBUTE_ARCHIVE, но не устанавливает дескриптор безопасности
 	// заданный структурой SECURITY_ATTRIBUTES.
-	HANDLE hFile = CreateFile(fileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFile((LPSTR)fileCharName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile != 0)
 		cout << "Файл создан!\n";
 	else
 		cout << "Ошибка, файл не был создан!\n";
 	CloseHandle(hFile);
 }
+
+
 void copyFile() {
+    //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 
@@ -205,34 +210,31 @@ void copyFile() {
 	cin >> sourceChar;
 	cout << "Введите путь куда скопировать файл (латинскими буквами, без пробелов): ";
 	cin >> destinationChar;
-	mbstowcs(source, sourceChar, 250);
-	mbstowcs(destination, destinationChar, 250);
 
 	// имя существующего файла
 	// имя нового файла
 	// операция, если файл существует
-	if (CopyFile(source, destination, false))
+	if (CopyFile((LPSTR)sourceChar, (LPSTR)destinationChar, false))
 		cout << "Файл скопирован!\n";
 	else
 		cout << "Произошла ошибка, файл не был скопирован!\n";
 
 }
+
 void moveFile() {
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
-	cout << "Введите путь к файлу (латинскими буквами, без пробелов): ";
+	cout << "Введите путь к файлу (латинскими буквами, без пробелов с названием самого файла): ";
 	cin >> sourceChar;
-	cout << "Введите путь куда переместить файл (латинскими буквами, без пробелов): ";
+	cout << "Введите путь куда переместить файл (латинскими буквами, без пробелов с названием файла в папке после перемещения): ";
 	cin >> destinationChar;
-	mbstowcs(source, sourceChar, 250);
-	mbstowcs(destination, destinationChar, 250);
 
-	if (MoveFile(source,destination))
+	if (MoveFile((LPSTR)sourceChar,(LPSTR)destinationChar))
 		cout << "Файл перемещен";
 	else
 		cout << "Произошла ошибка, файл не был перемещён!" << GetLastError() << "\n";
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-		if (MoveFileEx(source, destination, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
+		if (MoveFileEx((LPSTR)sourceChar, (LPSTR)destinationChar, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
 			cout << "Но теперь файл перемещен с заменой" << endl;
 		}
 		else {
@@ -241,7 +243,7 @@ void moveFile() {
 	}
 }
 
-
+/*
 void fileInfo() {
 	wchar_t fileName[250];
 	char fileCharName[250];
@@ -490,10 +492,13 @@ int main() {
 			system("pause");
 	} while (notExit);
 	cin.get();*/
-//	showDrivesList();
-//	showDriveInfo();
-//  createFolder();
-    deleteFolder();
+//	  showDrivesList();
+//	  showDriveInfo();
+//    createFolder();
+//    deleteFolder();
+//    createFile();
+//    copyFile();
+    moveFile();
 	return 0;
 }
 

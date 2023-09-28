@@ -19,7 +19,7 @@ void showDrivesList() {
 	char driveLetter;
 	DWORD dr = GetLogicalDrives();
 
-	cout << "GetLogicalDrives():\n";
+	cout << "GetLogicalDrives():";
 
 	for (int i = 0; i < 26; i++) {
 		n = ((dr >> i) & 0x1);
@@ -28,7 +28,7 @@ void showDrivesList() {
 			cout << driveLetter << endl;
 		}
 	}
-	cout << "\nGetLogicalDriveStrings():\n";
+	cout << "\nGetLogicalDriveStrings():";
 
 	wchar_t drives[256];
 	wchar_t *drive;
@@ -36,7 +36,7 @@ void showDrivesList() {
 	GetLogicalDriveStrings(sizebuf, (LPSTR)drives);
 	drive = drives;
 	while (*drive) {
-		wprintf(L"%s\n", drive); //L:\ 3 символа
+		wprintf(L"%s\n", drive);
 		drive = drive + wcslen(drive) + 1;
 	}
 }
@@ -45,7 +45,7 @@ void showDriveInfo() {
     //OK
 	char driveLetter[100];
 	wchar_t driveLetterWchar[100];
-	cout << "Введите метку тома (например C): ";
+	cout << "Введите наименование диска (C, D, F, ...): ";
 	cin >> driveLetter;
 	driveLetter[1] = ':';
 	driveLetter[2] = '\\';
@@ -55,10 +55,10 @@ void showDriveInfo() {
 	cout << "Тип диска: ";
 	switch (driveType) {
 	case DRIVE_UNKNOWN:
-		cout << "Неизвестный тип\n";
+		cout << "Тип не известен\n";
 		return;
 	case DRIVE_NO_ROOT_DIR:
-		cout << "Диска с такой меткой не существует\n";
+		cout << "Диск не является корневой директорией\n";
 		return;
 	case DRIVE_REMOVABLE:
 		cout << "Съёмный носитель";
@@ -67,13 +67,13 @@ void showDriveInfo() {
 		cout << "Внутренний диск";
 		break;
 	case DRIVE_REMOTE:
-		cout << "Удалённый диск";
+		cout << "Внешний (удалённый) диск";
 		break;
 	case DRIVE_CDROM:
-		cout << "Дисковод";
+		cout << "CD-rom";
 		break;
 	case DRIVE_RAMDISK:
-		cout << "RAM диск";
+		cout << "RAM-диск";
 		break;
 	}
 	cout << endl;
@@ -85,36 +85,36 @@ void showDriveInfo() {
 	DWORD maxComponentLength = 0, systemFlags = 0; //fs - системные флаги
 	unsigned long drive_sn = 0;
 	GetVolumeInformationA(driveLetter, volumeNameBuffer, 100, &drive_sn, &maxComponentLength, &systemFlags, fileSystemNameBuffer, 100); //ANSI
-	cout << "Имя диска: " << volumeNameBuffer << endl <<
+	cout << "Наименование диска: " << volumeNameBuffer << endl <<
 		"Серийный номер: " << drive_sn << endl <<
-		"Тип файловой системы: " << fileSystemNameBuffer << endl << endl <<
+		"Файловая система: " << fileSystemNameBuffer << endl << endl <<
 		"Системные флаги: " << endl;
 
 	string TSV = "";
 	string TSVS = TSV + "";
 
 	if (systemFlags & FILE_CASE_PRESERVED_NAMES)
-		cout << TSVS + " при записи на диск сохранить регистр букв в имени файла.\n";
+		cout << TSVS + " сохранять ргистр названия файла при записи на диск.\n";
 	if (systemFlags & FILE_CASE_SENSITIVE_SEARCH)
-		cout << TSVS + " поддержка со стороны файловой системы поиска с сохранением регистра букв.\n";
+		cout << TSVS + " поддержка поиска с сохранением регистра букв.\n";
 	if (systemFlags & FILE_FILE_COMPRESSION)
-		cout << TSVS + " файловая система поддерживает сжатие файлов.\n";
+		cout << TSVS + " поддержка сжатия файлов.\n";
 	if (systemFlags & FILE_NAMED_STREAMS)
-		cout << TSVS + " файловая система поддерживает потоки имен.\n";
+		cout << TSVS + " поддержка потомков имён.\n";
 	if (systemFlags & FILE_PERSISTENT_ACLS)
 		cout << TSV + " сохраняет и вводит списки контроля доступа (ACL). Например, файловая система NTFS сохраняет и применяет ACL, а файловая система FAT нет.\n";
 	if (systemFlags & FILE_READ_ONLY_VOLUME)
-		cout << TSV + " Том только для чтения.\n";
+		cout << TSV + " только для чтения.\n";
 	if (systemFlags & FILE_SEQUENTIAL_WRITE_ONCE)
 		cout << TSVS + " одна последовательная запись.\n";
 	if (systemFlags & FILE_SUPPORTS_ENCRYPTION)
-		cout << TSVS + " зашифрованная ФС (поддержка EFS).\n";
+		cout << TSVS + " поддержка EFS (шифование ФС).\n";
 	if (systemFlags & FILE_SUPPORTS_EXTENDED_ATTRIBUTES)
 		cout << TSVS + " поддержка расширенных атрибутов.\n";
 	if (systemFlags & FILE_SUPPORTS_HARD_LINKS)
 		cout << TSVS + " hard links. \n";
 	if (systemFlags & FILE_SUPPORTS_OBJECT_IDS)
-		cout << TSVS + " Система поддерживает описатель объектов.\n";
+		cout << TSVS + " поддрка описателя объектов.\n";
 	if (systemFlags & FILE_SUPPORTS_OPEN_BY_FILE_ID)
 		cout << TSVS + " open by FileID.\n";
 	if (systemFlags & FILE_SUPPORTS_REPARSE_POINTS)
@@ -124,19 +124,19 @@ void showDriveInfo() {
 	if (systemFlags & FILE_SUPPORTS_TRANSACTIONS)
 		cout << TSVS + " transactions.\n";
 	if (systemFlags & FILE_SUPPORTS_USN_JOURNAL)
-		cout << TSVS + " update sequence number (USN) journals.\n";
+		cout << TSVS + " update sequence number journals.\n";
 	if (systemFlags & FILE_UNICODE_ON_DISK)
-		cout << TSVS + " файловая система поддерживает хранение имен файлов в Unicode.\n";
+		cout << TSVS + " поддержка имён файлов в Unicode.\n";
 	if (systemFlags & FILE_VOLUME_IS_COMPRESSED)
-		cout << TSV + " том, о котором запрашивается информация, был сжат.\n";
+		cout << TSV + " том сжат.\n";
 	if (systemFlags & FILE_VOLUME_QUOTAS)
-		cout << TSVS + " Файловая система поддерживает дисковые квоты.\n";
+		cout << TSVS + " поддержка дисковых квот.\n";
 
 	DWORD sectorsPerCluster, bytesPerSector, freeClusters, totalClusters;
 	GetDiskFreeSpaceA(driveLetter, &sectorsPerCluster, &bytesPerSector, &freeClusters, &totalClusters);
 	unsigned __int64 free = freeClusters * sectorsPerCluster / 1024 * bytesPerSector / 1024;
 	unsigned __int64 total = totalClusters * sectorsPerCluster / 1024 * bytesPerSector / 1024;
-	cout << endl << "Дисковое пространство (свободное/всего): " << free << " / " << total << " MiB\n";
+	cout << endl << "Место на диске (свободно/всего): " << free << " / " << total << " MiB\n";
 }
 
 bool isDirectoryExists(const wchar_t *filename)
@@ -151,34 +151,31 @@ void createFolder() {
     //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
-	cout << "Введите название папки (латинскими буквами, без пробелов): ";
+	cout << "Введите название папки (наппример: C:\\folder): ";
 	cin >> directoryCharName;
-	// 1 имя каталога
-	// 2 атрибуты безопасности
-	// вернет число
 	if (CreateDirectory((LPSTR)directoryCharName, NULL) != 0)
-		cout << "Папка создана\n";
+		cout << "Папка создана успешно\n";
 	else
-		cout << "Ошибка, папка не создалась!\n";
+		cout << "Ошибка, папка не создалась\n";
 }
 
 void deleteFolder() {
     //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
-	cout << "Введите название папки (латинскими буквами, без пробелов): ";
+	cout << "Введите название папки (наппример: C:\\folder): ";
 	cin >> directoryCharName;
     if (RemoveDirectory((LPSTR)directoryCharName) != 0)
-        cout << "Папка удалена\n";
+        cout << "Папка удалена успешно\n";
     else
-        cout << "Ошибка, папка не была удалена!\n";
+        cout << "Папка не была удалена, проверьте её наличие\n";
 }
 
 void createFile() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
+	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
 	cin >> fileCharName;
 	// 1 имя файла
 	// 2 режим доступа
@@ -194,9 +191,9 @@ void createFile() {
 	// заданный структурой SECURITY_ATTRIBUTES.
 	HANDLE hFile = CreateFile((LPSTR)fileCharName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile != 0)
-		cout << "Файл создан!\n";
+		cout << "Файл создан\n";
 	else
-		cout << "Ошибка, файл не был создан!\n";
+		cout << "Ошибка, файл не был создан\n";
 	CloseHandle(hFile);
 }
 
@@ -206,18 +203,18 @@ void copyFile() {
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 
-	cout << "Введите путь к файлу (латинскими буквами, без пробелов): ";
+	cout << "Введите путь к файлу (наппример: C:\\folder\\file.txt): ";
 	cin >> sourceChar;
-	cout << "Введите путь куда скопировать файл (латинскими буквами, без пробелов): ";
+	cout << "Введите путь куда скопировать файл (наппример: C:\\folder\\file.txt): ";
 	cin >> destinationChar;
 
 	// имя существующего файла
 	// имя нового файла
 	// операция, если файл существует
 	if (CopyFile((LPSTR)sourceChar, (LPSTR)destinationChar, false))
-		cout << "Файл скопирован!\n";
+		cout << "Файл скопирован успешно\n";
 	else
-		cout << "Произошла ошибка, файл не был скопирован!\n";
+		cout << "Произошла ошибка, файл не был скопирован\n";
 
 }
 
@@ -225,18 +222,18 @@ void moveFile() {
     //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
-	cout << "Введите путь к файлу (латинскими буквами, без пробелов с названием самого файла): ";
+	cout << "Введите путь к файлу (наппример: C:\\folder1\\file_1.txt): ";
 	cin >> sourceChar;
-	cout << "Введите путь куда переместить файл (латинскими буквами, без пробелов с названием файла в папке после перемещения): ";
+	cout << "Введите путь куда переместить файл (наппример: C:\\folder2\\file_2.txt): ";
 	cin >> destinationChar;
 
 	if (MoveFile((LPSTR)sourceChar,(LPSTR)destinationChar))
 		cout << "Файл перемещен";
 	else
-		cout << "Произошла ошибка, файл не был перемещён!" << GetLastError() << "\n";
+		cout << "Произошла ошибка, файл не был перемещён" << GetLastError() << "\n";
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		if (MoveFileEx((LPSTR)sourceChar, (LPSTR)destinationChar, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
-			cout << "Но теперь файл перемещен с заменой" << endl;
+			cout << "Файл перемещен с заменой" << endl;
 		}
 		else {
 			cout << "Не удалось переместить с заменой" << endl;
@@ -249,7 +246,7 @@ void fileInfo() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
+	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
 	cin >> fileCharName;
 	ostringstream tempStringStream;
 
@@ -303,7 +300,7 @@ void fileInfo() {
 	HANDLE hFile = (HANDLE)_get_osfhandle(_fileno(pfile));
 
 	if (hFile == NULL) {
-		cout << "Невозможно получить обработчик файла!\n";
+		cout << "Невозможно получить обработчик файла\n";
 		return;
 	}
 
@@ -360,7 +357,7 @@ void fileInfo() {
 void changeFileAttributes() {
     //OK
 	char fileName[250];
-	cout << "Введите имя файла (латинскими буквами, без пробелов): ";
+	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
 	cin >> fileName;
 	DWORD attrs = GetFileAttributesA(fileName);
 
@@ -507,20 +504,20 @@ int menu()
 		cin.sync();
 
 		cout << "Выберите пункт меню" << endl;
-		cout << "1 - Вывод списка дисков" << endl;
-		cout << "2 - Вывести информацию о диске" << endl;
-		cout << "3 - Создать каталог" << endl;
-		cout << "4 - Удалить каталог" << endl;
-		cout << "5 - Создать файл" << endl;
-		cout << "6 - Копировать файл" << endl;
-		cout << "7 - Переместить файл" << endl;
-		cout << "8 - Информация о файле" << endl;
-		cout << "9 - Изменить атрибуты файла" << endl;
-		cout << "10 - Изменить время создания файла" << endl;
-		cout << "11 - Асинхронное копирование файла" << endl;
+		cout << "1 => Вывод списка дисков" << endl;
+		cout << "2 => Вывести информацию о диске" << endl;
+		cout << "3 => Создать каталог" << endl;
+		cout << "4 => Удалить каталог" << endl;
+		cout << "5 => Создать файл" << endl;
+		cout << "6 => Копировать файл" << endl;
+		cout << "7 => Переместить файл" << endl;
+		cout << "8 => Информация о файле" << endl;
+		cout << "9 => Изменить атрибуты файла" << endl;
+		cout << "10 => Изменить время создания файла" << endl;
+		cout << "11 => Асинхронное копирование файла" << endl;
 
-		cout << "0 - Выход" << endl;
-		cout << "> ";
+		cout << "0 => Выход" << endl;
+		cout << "=: ";
 		cin >> point;
 		if (cin.fail())
 			cout << "Что-то пошло не так, выберите пункт меню повторно" << endl;

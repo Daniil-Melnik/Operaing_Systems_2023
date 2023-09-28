@@ -88,7 +88,7 @@ void showDriveInfo() {
 	printf("Наименование диска: %s\nСерийный номер: %d\nФайловая система: %s\nСистемные флаги: \n", volumeNameBuffer, drive_sn,
         fileSystemNameBuffer);
 
-	char TSV[500] = "";
+	char TSV[20] = "";
 	char *TSVS = strcat(TSV, "");
 
 
@@ -138,12 +138,12 @@ void showDriveInfo() {
 	unsigned __int64 total = totalClusters * sectorsPerCluster / 1024 * bytesPerSector / 1024;
 	printf("\nМесто на диске (свободно/всего): %d/%d MiB\n", free, total);
 }
-/*
-bool isDirectoryExists(const wchar_t *filename)
+
+boolean isDirectoryExists(const wchar_t *filename)
 {
 	DWORD dwFileAttributes = GetFileAttributes((LPSTR)filename);
 	if (dwFileAttributes == 0xFFFFFFFF)
-		return false;
+		return 0;
 	return dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 }
 
@@ -151,32 +151,32 @@ void createFolder() {
     //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
-	cout << "Введите название папки (наппример: C:\\folder): ";
-	cin >> directoryCharName;
+	printf("Введите название папки (например: C:\\\\folder): ");
+	scanf("%s", &directoryCharName);
 	if (CreateDirectory((LPSTR)directoryCharName, NULL) != 0)
-		cout << "Папка создана успешно\n";
+		printf("Папка создана успешно\n");
 	else
-		cout << "Ошибка, папка не создалась\n";
+		printf("Ошибка, папка не создалась\n");
 }
 
 void deleteFolder() {
     //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
-	cout << "Введите название папки (наппример: C:\\folder): ";
-	cin >> directoryCharName;
+	printf("Введите название папки (например: C:\\\\folder): ");
+	scanf("%s", &directoryCharName);
     if (RemoveDirectory((LPSTR)directoryCharName) != 0)
-        cout << "Папка удалена успешно\n";
+        printf("Папка удалена успешно\n");
     else
-        cout << "Папка не была удалена, проверьте её наличие\n";
+        printf("Папка не была удалена, проверьте её наличие\n");
 }
 
 void createFile() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
-	cin >> fileCharName;
+	printf("Введите имя файла (наппример: C:\\folder\\file.txt): ");
+	scanf("%s", &fileCharName);
 	// 1 имя файла
 	// 2 режим доступа
 	// 3 совместный доступ
@@ -191,9 +191,9 @@ void createFile() {
 	// заданный структурой SECURITY_ATTRIBUTES.
 	HANDLE hFile = CreateFile((LPSTR)fileCharName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile != 0)
-		cout << "Файл создан\n";
+		printf("Файл создан\n");
 	else
-		cout << "Ошибка, файл не был создан\n";
+		printf("Ошибка, файл не был создан\n");
 	CloseHandle(hFile);
 }
 
@@ -203,18 +203,18 @@ void copyFile() {
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 
-	cout << "Введите путь к файлу (наппример: C:\\folder\\file.txt): ";
-	cin >> sourceChar;
-	cout << "Введите путь куда скопировать файл (наппример: C:\\folder\\file.txt): ";
-	cin >> destinationChar;
+	printf("Введите путь к файлу (наппример: C:\\folder\\file.txt): ");
+	scanf("%s", &sourceChar);
+	printf("Введите путь куда скопировать файл (наппример: C:\\folder\\file.txt): ");
+	scanf("%s", &destinationChar);
 
 	// имя существующего файла
 	// имя нового файла
 	// операция, если файл существует
-	if (CopyFile((LPSTR)sourceChar, (LPSTR)destinationChar, false))
-		cout << "Файл скопирован успешно\n";
+	if (CopyFile((LPSTR)sourceChar, (LPSTR)destinationChar, 0))
+		printf("Файл скопирован успешно\n");
 	else
-		cout << "Произошла ошибка, файл не был скопирован\n";
+		printf("Произошла ошибка, файл не был скопирован\n");
 
 }
 
@@ -222,27 +222,27 @@ void moveFile() {
     //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
-	cout << "Введите путь к файлу (наппример: C:\\folder1\\file_1.txt): ";
-	cin >> sourceChar;
-	cout << "Введите путь куда переместить файл (наппример: C:\\folder2\\file_2.txt): ";
-	cin >> destinationChar;
+	printf("Введите путь к файлу (наппример: C:\\folder1\\file_1.txt): ");
+	scanf("%s", &sourceChar);
+	printf("Введите путь куда переместить файл (наппример: C:\\folder2\\file_2.txt): ");
+	scanf ("%s", &destinationChar);
 
 	if (MoveFile((LPSTR)sourceChar,(LPSTR)destinationChar))
-		cout << "Файл перемещен";
+		printf("Файл перемещен");
 	else
-		cout << "Произошла ошибка, файл не был перемещён" << GetLastError() << "\n";
+		printf("Произошла ошибка, файл не был перемещён %s %s", GetLastError(),"\n");
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 		if (MoveFileEx((LPSTR)sourceChar, (LPSTR)destinationChar, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
-			cout << "Файл перемещен с заменой" << endl;
+			printf("Файл перемещен с заменой\n");
 		}
 		else {
-			cout << "Не удалось переместить с заменой" << endl;
+			printf("Не удалось переместить с заменой\n");
 		}
 	}
 }
 
 
-void fileInfo() {
+/*void fileInfo() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
@@ -455,7 +455,7 @@ int main() {
 		case 2:
 			showDriveInfo(); // GetDriveType, GetVolumeInformation, GetDiskFreeSpace
 			break;
-		/*case 3:
+		case 3:
 			createFolder(); // CreateDirectory
 			break;
 		case 4:
@@ -470,7 +470,7 @@ int main() {
 		case 7:
 			moveFile();     // moveFile, moveFileEx
 			break;
-		case 8:
+		/*case 8:
 			fileInfo();
 			break;
 		case 9:

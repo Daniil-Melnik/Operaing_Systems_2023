@@ -36,7 +36,7 @@ void get_logical_drive_strings() {
 int main()
 {
     get_logical_drivers();
-    get_logical_drive_strings();
+    // get_logical_drive_strings();
     return 0;
 }
 

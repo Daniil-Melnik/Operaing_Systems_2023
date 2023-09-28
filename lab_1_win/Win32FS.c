@@ -175,7 +175,7 @@ void createFile() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	printf("Введите имя файла (наппример: C:\\folder\\file.txt): ");
+	printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &fileCharName);
 	// 1 имя файла
 	// 2 режим доступа
@@ -203,9 +203,9 @@ void copyFile() {
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 
-	printf("Введите путь к файлу (наппример: C:\\folder\\file.txt): ");
+	printf("Введите путь к файлу (наппример: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &sourceChar);
-	printf("Введите путь куда скопировать файл (наппример: C:\\folder\\file.txt): ");
+	printf("Введите путь куда скопировать файл (наппример: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &destinationChar);
 
 	// имя существующего файла
@@ -222,9 +222,9 @@ void moveFile() {
     //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
-	printf("Введите путь к файлу (наппример: C:\\folder1\\file_1.txt): ");
+	printf("Введите путь к файлу (наппример: C:\\\\folder1\\\\file_1.txt): ");
 	scanf("%s", &sourceChar);
-	printf("Введите путь куда переместить файл (наппример: C:\\folder2\\file_2.txt): ");
+	printf("Введите путь куда переместить файл (наппример: C:\\\\folder2\\\\file_2.txt): ");
 	scanf ("%s", &destinationChar);
 
 	if (MoveFile((LPSTR)sourceChar,(LPSTR)destinationChar))
@@ -242,65 +242,63 @@ void moveFile() {
 }
 
 
-/*void fileInfo() {
+void fileInfo() {
     //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
-	cin >> fileCharName;
-	ostringstream tempStringStream;
+	printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
+	scanf("%s", fileCharName);
 
 	DWORD fileAttributes;
 	if (fileAttributes = GetFileAttributes((LPSTR)fileCharName) == INVALID_FILE_ATTRIBUTES) {
-		cout << "Ошибка: " << GetLastError();
+		printf("Ошибка: %s" , GetLastError());
 	}
-		tempStringStream << "0x";
-		tempStringStream << hex << fileAttributes << "\n";
-		cout << "Аттрибуты: " << tempStringStream.str() << endl;
+
+		printf("Аттрибуты: \n");
 		if (fileAttributes & FILE_ATTRIBUTE_ARCHIVE)
-			cout << "FILE_ATTRIBUTE_ARCHIVE:\nA file or directory that is an archive file or directory. Applications typically use this attribute to mark files for backup or removal.\n--\n";
+			printf("FILE_ATTRIBUTE_ARCHIVE:\nA file or directory that is an archive file or directory. Applications typically use this attribute to mark files for backup or removal.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_COMPRESSED)
-			cout << "FILE_ATTRIBUTE_COMPRESSED:\nA file or directory that is compressed. For a file, all of the data in the file is compressed. For a directory, compression is the default for newly created files and subdirectories.\n--\n";
+			printf("FILE_ATTRIBUTE_COMPRESSED:\nA file or directory that is compressed. For a file, all of the data in the file is compressed. For a directory, compression is the default for newly created files and subdirectories.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_DEVICE)
-			cout << "FILE_ATTRIBUTE_DEVICE:\nThis value is reserved for system use.\n--\n";
+			printf("FILE_ATTRIBUTE_DEVICE:\nThis value is reserved for system use.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			cout << "FILE_ATTRIBUTE_DIRECTORY:\nThe handle that identifies a directory.\n--\n";
+			printf("FILE_ATTRIBUTE_DIRECTORY:\nThe handle that identifies a directory.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_ENCRYPTED)
-			cout << "FILE_ATTRIBUTE_ENCRYPTED:\nA file or directory that is encrypted. For a file, all data streams in the file are encrypted. For a directory, encryption is the default for newly created files and subdirectories.\n--\n";
+			printf("FILE_ATTRIBUTE_ENCRYPTED:\nA file or directory that is encrypted. For a file, all data streams in the file are encrypted. For a directory, encryption is the default for newly created files and subdirectories.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_HIDDEN)
-			cout << "FILE_ATTRIBUTE_HIDDEN:\nThe file or directory is hidden. It is not included in an ordinary directory listing.\n--\n";
-		if (fileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM)
-			cout << "FILE_ATTRIBUTE_INTEGRITY_STREAM:\nThe directory or user data stream is configured with integrity (only supported on ReFS volumes). It is not included in an ordinary directory listing. The integrity setting persists \
-			 with the file if it's renamed. If a file is copied the destination file will have integrity set if either the source file or destination directory have integrity set.\n--\n";
+			printf("FILE_ATTRIBUTE_HIDDEN:\nThe file or directory is hidden. It is not included in an ordinary directory listing.\n--\n");
+		//if (fileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM)
+		//	printf("FILE_ATTRIBUTE_INTEGRITY_STREAM:\nThe directory or user data stream is configured with integrity (only supported on ReFS volumes). It is not included in an ordinary directory listing. The integrity setting persists \
+			 with the file if it's renamed. If a file is copied the destination file will have integrity set if either the source file or destination directory have integrity set.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_NORMAL)
-			cout << "FILE_ATTRIBUTE_NORMAL:\nA file that does not have other attributes set. This attribute is valid only when used alone.\n";
+			printf("FILE_ATTRIBUTE_NORMAL:\nA file that does not have other attributes set. This attribute is valid only when used alone.\n");
 		if (fileAttributes & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
-			cout << "FILE_ATTRIBUTE_NOT_CONTENT_INDEXED:\nThe file or directory is not to be indexed by the content indexing service.\n";
-		if (fileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA)
-			cout << "FILE_ATTRIBUTE_NO_SCRUB_DATA:\nThe user data stream not to be read by the background data integrity scanner (AKA scrubber). When set on a directory it only provides inheritance. This flag is only supported on\
-				Storage Spaces and ReFS volumes. It is not included in an ordinary directory listing.\n--\n";
+			printf("FILE_ATTRIBUTE_NOT_CONTENT_INDEXED:\nThe file or directory is not to be indexed by the content indexing service.\n");
+		//if (fileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA)
+		//	printf("FILE_ATTRIBUTE_NO_SCRUB_DATA:\nThe user data stream not to be read by the background data integrity scanner (AKA scrubber). When set on a directory it only provides inheritance. This flag is only supported on\
+				Storage Spaces and ReFS volumes. It is not included in an ordinary directory listing.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_OFFLINE)
-			cout << "FILE_ATTRIBUTE_OFFLINE:\nThe data of a file is not available immediately. This attribute indicates that the file data is physically moved to offline storage. This attribute is used by Remote Storage,\
-				 which is the hierarchical storage management software. Applications should not arbitrarily change this attribute.\n--\n";
+			printf("FILE_ATTRIBUTE_OFFLINE:\nThe data of a file is not available immediately. This attribute indicates that the file data is physically moved to offline storage. This attribute is used by Remote Storage,\
+				 which is the hierarchical storage management software. Applications should not arbitrarily change this attribute.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_READONLY)
-			cout << "FILE_ATTRIBUTE_READONLY:\nA file that is read-only. Applications can read the file, but cannot write to it or delete it. This attribute is not honored on directories.\n--\n";
+			printf("FILE_ATTRIBUTE_READONLY:\nA file that is read-only. Applications can read the file, but cannot write to it or delete it. This attribute is not honored on directories.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
-			cout << "FILE_ATTRIBUTE_REPARSE_POINT:\nA file or directory that has an associated reparse point, or a file that is a symbolic link.\n--\n";
+			printf("FILE_ATTRIBUTE_REPARSE_POINT:\nA file or directory that has an associated reparse point, or a file that is a symbolic link.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_SPARSE_FILE)
-			cout << "FILE_ATTRIBUTE_SPARSE_FILE:\nA file that is a sparse file.\n--\n";
+			printf("FILE_ATTRIBUTE_SPARSE_FILE:\nA file that is a sparse file.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_SYSTEM)
-			cout << "FILE_ATTRIBUTE_SYSTEM:\nA file or directory that the operating system uses a part of, or uses exclusively.\n--\n";
+			printf("FILE_ATTRIBUTE_SYSTEM:\nA file or directory that the operating system uses a part of, or uses exclusively.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_TEMPORARY)
-			cout << "FILE_ATTRIBUTE_TEMPORARY:\nA file that is being used for temporary storage. File systems avoid writing data back to mass storage if sufficient cache memory is available, because typically, an application\
-				 deletes a temporary file after the handle is closed. In that scenario, the system can entirely avoid writing the data. Otherwise, the data is written after the handle is closed.\n--\n";
+			printf("FILE_ATTRIBUTE_TEMPORARY:\nA file that is being used for temporary storage. File systems avoid writing data back to mass storage if sufficient cache memory is available, because typically, an application\
+				 deletes a temporary file after the handle is closed. In that scenario, the system can entirely avoid writing the data. Otherwise, the data is written after the handle is closed.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_VIRTUAL)
-			cout << "FILE_ATTRIBUTE_VIRTUAL:\nThis value is reserved for system use.\n--\n";
+			printf("FILE_ATTRIBUTE_VIRTUAL:\nThis value is reserved for system use.\n--\n");
 
 	FILE* pfile = fopen(fileCharName, "r");
 	HANDLE hFile = (HANDLE)_get_osfhandle(_fileno(pfile));
 
 	if (hFile == NULL) {
-		cout << "Невозможно получить обработчик файла\n";
+		printf("Невозможно получить обработчик файла\n");
 		return;
 	}
 
@@ -334,21 +332,17 @@ void moveFile() {
 		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileAccessedSystemTime, NULL, (LPSTR)accessedLocalTime, 255);
 		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &fileWritedSystemTime, NULL, (LPSTR)writedLocalTime, 255);
 
-		cout << "Время создания: " << fileCreatedSystemTime.wDay << "." << fileCreatedSystemTime.wMonth << "."
-			<< fileCreatedSystemTime.wYear << " " << fileCreatedSystemTime.wHour << ":"
-			<< fileCreatedSystemTime.wMinute << "\n";
-		cout << "Последнее обращение: " << fileAccessedSystemTime.wDay << "." << fileAccessedSystemTime.wMonth << "."
-			<< fileAccessedSystemTime.wYear << " " << fileAccessedSystemTime.wHour << ":"
-			<< fileAccessedSystemTime.wMinute << "\n";
-		cout << "Последнее изменение: " << fileWritedSystemTime.wDay << "." << fileWritedSystemTime.wMonth << "."
-			<< fileWritedSystemTime.wYear << " " << fileWritedSystemTime.wHour << ":"
-			<< fileWritedSystemTime.wMinute << "\n";
+		printf("Время создания: %d.%d.%d %d : %d\n", fileCreatedSystemTime.wDay, fileCreatedSystemTime.wMonth, fileCreatedSystemTime.wYear,
+         fileCreatedSystemTime.wHour, fileCreatedSystemTime.wMinute);
+		printf("Последнее обращение: %d.%d.%d %d : %d\n", fileAccessedSystemTime.wDay, fileAccessedSystemTime.wMonth,
+			fileAccessedSystemTime.wYear, fileAccessedSystemTime.wHour, fileAccessedSystemTime.wMinute);
+		printf("Последнее изменение: %d.%d.%d %d : %d\n", fileWritedSystemTime.wDay, fileWritedSystemTime.wMonth,
+			fileWritedSystemTime.wYear, fileWritedSystemTime.wHour, fileWritedSystemTime.wMinute);
 	}
 
 	BY_HANDLE_FILE_INFORMATION fileinfo;
 	if (GetFileInformationByHandle(hFile, &fileinfo)) {
-		cout << "\nСерийный номер тома: " << fileinfo.dwVolumeSerialNumber << endl
-			<< "Количество ссылок: " << fileinfo.nNumberOfLinks << endl;
+		printf("\nСерийный номер: %d\nКоличество ссылок: %d\n", fileinfo.dwVolumeSerialNumber, fileinfo.nNumberOfLinks);
 	}
 	CloseHandle(hFile);
 	fclose(pfile);
@@ -357,73 +351,83 @@ void moveFile() {
 void changeFileAttributes() {
     //OK
 	char fileName[250];
-	cout << "Введите имя файла (наппример: C:\\folder\\file.txt): ";
-	cin >> fileName;
-	DWORD attrs = GetFileAttributesA(fileName);
+	//printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
+	//scanf("%s", &fileName);
+	DWORD attrs = GetFileAttributesA("C:\\new2\\1.txt");
 
-	char answer;
+	int answer;
 
-	cout << "Сделать архивным? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
+	printf("Сделать архивным? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+	{
+	    printf("Q1\n");
 		attrs |= FILE_ATTRIBUTE_ARCHIVE;
+	}
 	else
 		attrs &= ~FILE_ATTRIBUTE_ARCHIVE;
-	cout << "Сделать невидимым? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_HIDDEN;
+	printf("Сделать невидимым? (1/0):");
+    scanf("%d", &answer);
+	if (answer == 1)
+    {printf("Q2\n");
+		attrs |= FILE_ATTRIBUTE_HIDDEN;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_HIDDEN;
-	cout << "Сделать обычным? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_NORMAL;
+	printf("Сделать обычным? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q3\n");
+		attrs |= FILE_ATTRIBUTE_NORMAL;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_NORMAL;
-	cout << "Индексировать содержание? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
+	printf("Индексировать содержание? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q4\n");
+		attrs |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
-	cout << "Доступен без сети? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_OFFLINE;
+	printf("Доступен без сети? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q5\n");
+		attrs |= FILE_ATTRIBUTE_OFFLINE;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_OFFLINE;
-	cout << "Сделать доступным только для чтения? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_READONLY;
+	printf("Сделать доступным только для чтения? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q6\n");
+		attrs |= FILE_ATTRIBUTE_READONLY;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_READONLY;
-	cout << "Сделать системным? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_SYSTEM;
+	printf("Сделать системным? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q7\n");
+		attrs |= FILE_ATTRIBUTE_SYSTEM;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_SYSTEM;
-	cout << "Сделать временным? (y/n):";
-	cin >> answer;
-	if (answer == 'y')
-		attrs |= FILE_ATTRIBUTE_TEMPORARY;
+	printf("Сделать временным? (1/0):");
+	scanf("%d", &answer);
+	if (answer == 1)
+        {printf("Q8\n");
+		attrs |= FILE_ATTRIBUTE_TEMPORARY;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_TEMPORARY;
 
-	if (SetFileAttributesA(fileName, attrs))
-		cout << "Аттрибуты успешно установленны!\n";
+	if (SetFileAttributesA("C:\\new2\\1.txt", attrs))
+		printf("Аттрибуты успешно установленны!\n");
 	else
-		cout << "Произошла ошибка, аттрибуты не были установлены!\n";
+		printf("Произошла ошибка, аттрибуты не были установлены!\n");
 }
 
 void changeCreationTime() {
     //OK
 	wchar_t filename[250];
 	char fileCharName[250];
-	cout << "Введите имя файла: ";
-	cin >> fileCharName;
+	printf("Введите имя файла: ");
+	scanf("%s", fileCharName);
 	HANDLE hFile = CreateFile((LPSTR)fileCharName, FILE_WRITE_ATTRIBUTES, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	FILETIME fileTime;
@@ -432,13 +436,13 @@ void changeCreationTime() {
 	SystemTimeToFileTime(&systemTimeNow, &fileTime);
 
 	if (SetFileTime(hFile, &fileTime, NULL, NULL))
-		cout << "Время успешно установленно\n" << systemTimeNow.wDay << "." << systemTimeNow.wMonth << "."
-		<< systemTimeNow.wYear << " " << systemTimeNow.wHour + 3 << ":" << systemTimeNow.wMinute << "\n";
+		printf("Время успешно установленно: %d.%d.%d %d:%d\n", systemTimeNow.wDay, systemTimeNow.wMonth,
+		systemTimeNow.wYear, systemTimeNow.wHour + 3, systemTimeNow.wMinute);
 	else
-		cout << "Произошла ошибка, время установить не удалось\n";
+		printf("Произошла ошибка, время установить не удалось\n");
 
 	CloseHandle(hFile);
-}*/
+}
 
 int menu();
 
@@ -470,7 +474,7 @@ int main() {
 		case 7:
 			moveFile();     // moveFile, moveFileEx
 			break;
-		/*case 8:
+		case 8:
 			fileInfo();
 			break;
 		case 9:
@@ -479,7 +483,7 @@ int main() {
 		case 10:
 			changeCreationTime();
 			break;
-		case 11:
+		/*case 11:
 			//asyncCopyOfFile();
 			break;
 		case 0:
@@ -499,7 +503,7 @@ int main() {
 boolean isTrueInput(int point)
 {
     boolean us = 1;
-    for (int i = 0; i <= 11; i++)
+    for (int i = 0; i < 11; i++)
     {
         if (point == i){
             us = 0;
@@ -524,7 +528,7 @@ int menu()
     printf("8 => Информация о файле\n");
     printf("9 => Изменить атрибуты файла\n");
     printf("10 => Изменить время создания файла\n");
-    printf("11 => Асинхронное копирование файла\n");
+    // printf("11 => Асинхронное копирование файла\n");
 
     printf("0 => Выход\n");
     printf("=: ");
@@ -542,7 +546,7 @@ int menu()
 		printf("8 => Информация о файле\n");
 		printf("9 => Изменить атрибуты файла\n");
 		printf("10 => Изменить время создания файла\n");
-		printf("11 => Асинхронное копирование файла\n");
+		// printf("11 => Асинхронное копирование файла\n");
 
 		printf("0 => Выход\n");
 		printf("=: ");

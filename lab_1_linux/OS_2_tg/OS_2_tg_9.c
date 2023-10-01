@@ -15,14 +15,16 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#define BLOCK_SIZE 256 // размер блока данных
-
 void handler(int sig, siginfo_t *si, void *ucontext) {
     // обработчик сигнала завершения операции ввода-вывода
     // здесь можно выполнять дополнительные действия по окончании операции
 }
 
-void copy_file(const char *src, const char *dest, int n) {
+int n_menu();
+
+int buf_menu();
+
+void copy_file(const char *src, const char *dest, int n, int block_size) {
     int src_fd, dest_fd;
     struct aiocb *aiocb_list[n];
 
@@ -49,13 +51,13 @@ void copy_file(const char *src, const char *dest, int n) {
     }
 
     // Расчет количества блоков данных
-    off_t num_blocks = file_size / BLOCK_SIZE;
+    off_t num_blocks = file_size / block_size;
 
     // Создание и заполнение структур aiocb
     for (int i = 0; i < n; i++) {
         aiocb_list[i] = calloc(1, sizeof(struct aiocb));
         aiocb_list[i]->aio_fildes = src_fd;
-        aiocb_list[i]->aio_nbytes = BLOCK_SIZE;
+        aiocb_list[i]->aio_nbytes = block_size;
         aiocb_list[i]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
         aiocb_list[i]->aio_sigevent.sigev_signo = SIGRTMIN;
         aiocb_list[i]->aio_sigevent.sigev_value.sival_ptr = aiocb_list[i];
@@ -69,16 +71,16 @@ void copy_file(const char *src, const char *dest, int n) {
     }
 
     // Выделение памяти для буфера данных
-    char *buffer = malloc(BLOCK_SIZE * n);
+    char *buffer = malloc(block_size * n);
 
     // Копирование блоков данных
     for (int i = 0; i < num_blocks; i += n) {
         // Чтение данных из исходного файла
         for (int j = 0; j < n; j++) {
-            aiocb_list[j]->aio_offset = i * BLOCK_SIZE + j * BLOCK_SIZE;
-            aiocb_list[j]->aio_buf = buffer + j * BLOCK_SIZE;
+            aiocb_list[j]->aio_offset = i * block_size + j * block_size;
+            aiocb_list[j]->aio_buf = buffer + j * block_size;
             aio_read(aiocb_list[j]);
-            printf("offset = %ld\n", aiocb_list[j]->aio_offset);
+            // printf("offset = %ld\n", aiocb_list[j]->aio_offset);
         }
 
         // Ожидание завершения операций чтения
@@ -97,7 +99,7 @@ void copy_file(const char *src, const char *dest, int n) {
         }
 
         // Запись данных в новый файл
-        ssize_t write_bytes = write(dest_fd, buffer, BLOCK_SIZE * n);
+        ssize_t write_bytes = write(dest_fd, buffer, block_size * n);
         if (write_bytes == -1) {
             perror("write");
             exit(EXIT_FAILURE);
@@ -114,11 +116,81 @@ void copy_file(const char *src, const char *dest, int n) {
 }
 
 int main() {
-    const char *src_file = "./1.txt";
-    const char *dest_file = "./destination_4.txt";
-    int n = 4; // количество перекрывающихся операций ввода-вывода
+    char src_file[50] = "";
+    char dest_file[50] = "";
 
-    copy_file(src_file, dest_file, n);
+    printf("Введите исходный файл: ");
+    fgets(src_file, 50, stdin);
+
+    printf("Введите целевой файл: ");
+    fgets(dest_file, 50, stdin);
+
+    src_file[str_change(src_file)] = '\0';
+    dest_file[str_change(dest_file)] = '\0';
+
+    int block_size = buf_menu(); // размер буфера в байтах
+    int n = n_menu(); // количество перекрывающихся операций ввода-вывода
+
+    printf ("Исходный файл      :%s\nЦелевой файл       :%s\nРазмер блока       : %d\nКоличество потоков : %d", src_file, dest_file, block_size, n);
+
+    copy_file(src_file, dest_file, n, block_size);
 
     return 0;
+}
+
+
+int buf_menu()
+{
+    int size = 128;
+
+    int k = 1, size_k;
+    printf ("Введите размер блока: \n");
+    for (int i = 128; i < 4097; i *= 2)
+    {
+        printf("%d) => %d MiB\n", k, i);
+        k++;
+    }
+    printf("=>");
+    scanf ("%d", &size_k);
+    while ((size_k < 1) || (size_k > 6))
+    {
+        printf("=>");
+        scanf ("%d", &size_k);
+    }
+
+    for (int i = 0; i < size_k-1; i++)
+    {
+        size *= 2;
+    }
+    return size;
+}
+
+
+int n_menu()
+{
+    int n;
+
+    printf("Введите количество потоков (положитльное, целое, кратное 2) : ");
+    scanf ("%d", &n);
+    while ((n % 2 != 0) || (n == 0))
+    {
+        printf("Введите количество потоков (положитльное, целое, кратное 2):");
+        scanf ("%d", &n);
+    }
+    printf("\n");
+    return n;
+}
+
+int str_change(char str[]) {
+    // initializing count variable (stores the length of the string)
+    int count = 0;
+
+    // incrementing the count till the end of the string
+    while (str[count] != '\n')
+    {
+        count++;
+    }
+
+    // returning the character count of the string
+    return count;
 }

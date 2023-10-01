@@ -24,7 +24,7 @@ int n_menu();
 
 int buf_menu();
 
-void copy_file(const char *src, const char *dest, int n, int block_size) {
+void copy_file(const char *src, const char *dest, int n, int block_size, int offset_cond) {
     int src_fd, dest_fd;
     struct aiocb *aiocb_list[n];
 
@@ -80,7 +80,8 @@ void copy_file(const char *src, const char *dest, int n, int block_size) {
             aiocb_list[j]->aio_offset = i * block_size + j * block_size;
             aiocb_list[j]->aio_buf = buffer + j * block_size;
             aio_read(aiocb_list[j]);
-            // printf("offset = %ld\n", aiocb_list[j]->aio_offset);
+            if (offset_cond == 1)
+                printf("offset[%d][%d] = %ld\n", i, j, aiocb_list[j]->aio_offset);
         }
 
         // Ожидание завершения операций чтения
@@ -116,24 +117,30 @@ void copy_file(const char *src, const char *dest, int n, int block_size) {
 }
 
 int main() {
-    char src_file[50] = "";
-    char dest_file[50] = "";
+    char src_file[50] = "./1.txt";
+    char dest_file[50] = "./2.txt";
 
-    printf("Введите исходный файл: ");
+    printf("Введите исходный файл              : ");
     fgets(src_file, 50, stdin);
 
-    printf("Введите целевой файл: ");
+    printf("Введите целевой файл               : ");
     fgets(dest_file, 50, stdin);
 
     src_file[str_change(src_file)] = '\0';
     dest_file[str_change(dest_file)] = '\0';
 
+    int offset_cond = cond_menu("Показывать сдвиг по потокам  ");
+
     int block_size = buf_menu(); // размер буфера в байтах
     int n = n_menu(); // количество перекрывающихся операций ввода-вывода
 
-    printf ("Исходный файл      :%s\nЦелевой файл       :%s\nРазмер блока       : %d\nКоличество потоков : %d", src_file, dest_file, block_size, n);
+    /*int block_size = 512;
+    int n = 4;
+    int offset_cond = 1;*/
 
-    copy_file(src_file, dest_file, n, block_size);
+    printf ("Исходный файл      :%s\nЦелевой файл       :%s\nРазмер блока       : %d\nКоличество потоков : %d\nПоказывать сдвиг   : %d\n", src_file, dest_file, block_size, n, offset_cond);
+
+    copy_file(src_file, dest_file, n, block_size, offset_cond);
 
     return 0;
 }
@@ -166,6 +173,19 @@ int buf_menu()
 }
 
 
+int cond_menu(char *str)
+{
+    int cond = 0;
+    printf("%s (0/1): ", str);
+    scanf("%d", &cond);
+    while ((cond != 0) && (cond != 1))
+    {
+        printf("Попробуйте ещё раз (0/1): ");
+        scanf("%d", &cond);
+    }
+    return cond;
+}
+
 int n_menu()
 {
     int n;
@@ -190,7 +210,6 @@ int str_change(char str[]) {
     {
         count++;
     }
-
     // returning the character count of the string
     return count;
 }

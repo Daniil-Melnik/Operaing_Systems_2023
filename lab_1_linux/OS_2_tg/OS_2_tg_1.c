@@ -33,8 +33,10 @@ int cluster_size = 4096;
 void perform_aio_operation(struct aio_operation* operation) {
     if (operation->write_operation) {
         aio_write(&operation->aio);
+        //printf("buffer = %s \n", &operation->buffer);
     } else {
         aio_read(&operation->aio);
+        //printf("buffer = %s \n", &operation->buffer);
     }
 }
 
@@ -59,6 +61,7 @@ void sigio_handler(int sig, siginfo_t *info, void *context) {
 
     // Переходим к следующей операции
     if (operation->next_operation != NULL) {
+        printf("Next operation\n");
         perform_aio_operation((struct aio_operation*)operation->next_operation);
     }
 }
@@ -80,12 +83,18 @@ int main(int argc, char *argv[]) {
         perror("open");
         exit(EXIT_FAILURE);
     }
+    else {
+        printf("Success with open input\n");
+    }
 
     // Открываем выходной файл
     output_fd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (output_fd == -1) {
         perror("open");
         exit(EXIT_FAILURE);
+    }
+    else {
+        printf("Success with open output\n");
     }
 
     // Заполняем буферы операций данными
@@ -96,6 +105,7 @@ int main(int argc, char *argv[]) {
         struct aio_operation* operation = malloc(sizeof(struct aio_operation));
         memset(operation, 0, sizeof(struct aio_operation));
         operation->buffer = buffer;
+        printf("buffer = %s \n", operation->buffer);
         operation->aio.aio_buf = buffer;
         operation->aio.aio_fildes = input_fd;
         operation->aio.aio_offset = offset;

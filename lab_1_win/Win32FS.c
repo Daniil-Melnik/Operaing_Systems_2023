@@ -1,5 +1,3 @@
-#pragma once
-
 #define _WIN32_WINNT 0x501
 
 #include <stdio.h>
@@ -8,22 +6,25 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <string.h>
-#define _CRT_SECURE_NO_WARNINGS
 
+
+// two types of functions are used
 void showDrivesList() {
     int n;
 	char dd[4];
 	DWORD dr = GetLogicalDrives();
+	printf("Available disk drives (GetLogicalDrives) : ");
 	for( int i = 0; i < 26; i++ )
 	{
 		n = ((dr>>i)&0x00000001);
+
 		if( n == 1 )
 		{
 			dd[0] =  (char)(65+i);
 			dd[1] = ':';
 			dd[2] = '\\';
 			dd[3] = 0;
-			printf("%s %s%s", "Available disk drives (GetLogicalDrives) : ", dd, "\n");
+			printf("%s ", dd);
 		}
 	}
 
@@ -35,14 +36,14 @@ void showDrivesList() {
     printf("\n%s", "Available disk drives (GetLogicalDriveStrings) : ");
     while (*disk)
     {
-        wprintf(L"%s", disk, ":\\\n");
+        wprintf(L"%s ", disk, ":\\\n");
         disk=disk+wcslen(disk)+1;
     }
     printf("\n");
 }
 
+// viewing file data
 void showDriveInfo() {
-    //OK
 	char driveLetter[100];
 	wchar_t driveLetterWchar[100];
 	printf("Введите наименование диска (C, D, F, ...): ");
@@ -82,7 +83,7 @@ void showDriveInfo() {
 	volumeNameBuffer[0] = 0;
 	char fileSystemNameBuffer[100];
 	fileSystemNameBuffer[0] = 0;
-	DWORD maxComponentLength = 0, systemFlags = 0; //fs - системные флаги
+	DWORD maxComponentLength = 0, systemFlags = 0;
 	unsigned long drive_sn = 0;
 	GetVolumeInformationA(driveLetter, volumeNameBuffer, 100, &drive_sn, &maxComponentLength, &systemFlags, fileSystemNameBuffer, 100); //ANSI
 	printf("Наименование диска: %s\nСерийный номер: %d\nФайловая система: %s\nСистемные флаги: \n", volumeNameBuffer, drive_sn,
@@ -102,7 +103,7 @@ void showDriveInfo() {
 	if (systemFlags & FILE_NAMED_STREAMS)
 		printf("%s поддержка потомков имён.\n", TSVS);
 	if (systemFlags & FILE_PERSISTENT_ACLS)
-		printf("%s сохраняет и вводит списки контроля доступа (ACL). Например, файловая система NTFS сохраняет и применяет ACL, а файловая система FAT нет.\n", TSV);
+		printf("%s сохраняет и вводит списки контроля доступа (ACL).\n", TSV);
 	if (systemFlags & FILE_READ_ONLY_VOLUME)
 		printf("%s только для чтения.\n", TSV);
 	if (systemFlags & FILE_SEQUENTIAL_WRITE_ONCE)
@@ -139,16 +140,21 @@ void showDriveInfo() {
 	printf("\nМесто на диске (свободно/всего): %d/%d MiB\n", free, total);
 }
 
-boolean isDirectoryExists(const wchar_t *filename)
+
+// checking the presence of a directory
+int isDirectoryExists(const char *filename)
 {
 	DWORD dwFileAttributes = GetFileAttributes((LPSTR)filename);
 	if (dwFileAttributes == 0xFFFFFFFF)
 		return 0;
-	return dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+    else
+        return 1;
+        //return dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 }
 
+
+// creating folder
 void createFolder() {
-    //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
 	printf("Введите название папки (например: C:\\\\folder): ");
@@ -159,8 +165,8 @@ void createFolder() {
 		printf("Ошибка, папка не создалась\n");
 }
 
+//deleting folder
 void deleteFolder() {
-    //OK
 	wchar_t directoryName[250];
 	char directoryCharName[250];
 	printf("Введите название папки (например: C:\\\\folder): ");
@@ -171,24 +177,12 @@ void deleteFolder() {
         printf("Папка не была удалена, проверьте её наличие\n");
 }
 
+// creating file
 void createFile() {
-    //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
-	printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
+	printf("Введите имя файла (например: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &fileCharName);
-	// 1 имя файла
-	// 2 режим доступа
-	// 3 совместный доступ
-	// 4 SD (дескр. защиты)
-	// 5 как действовать
-	// 6 атрибуты файла
-	// дескр. шаблона файла
-
-	// CREATE_ALWAYS  -  Создает новый файл. Если файл существует, функция переписывает файл,
-	// сбрасывает существующие атрибуты и объединяет, заданные параметром dwFlagsAndAttributes
-	// атрибуты файла и флажки, с FILE_ATTRIBUTE_ARCHIVE, но не устанавливает дескриптор безопасности
-	// заданный структурой SECURITY_ATTRIBUTES.
 	HANDLE hFile = CreateFile((LPSTR)fileCharName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile != 0)
 		printf("Файл создан\n");
@@ -197,20 +191,16 @@ void createFile() {
 	CloseHandle(hFile);
 }
 
-
+// coping file
 void copyFile() {
-    //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 
-	printf("Введите путь к файлу (наппример: C:\\\\folder\\\\file.txt): ");
+	printf("Введите путь к файлу (например: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &sourceChar);
-	printf("Введите путь куда скопировать файл (наппример: C:\\\\folder\\\\file.txt): ");
+	printf("Введите путь куда скопировать файл (например: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", &destinationChar);
 
-	// имя существующего файла
-	// имя нового файла
-	// операция, если файл существует
 	if (CopyFile((LPSTR)sourceChar, (LPSTR)destinationChar, 0))
 		printf("Файл скопирован успешно\n");
 	else
@@ -218,8 +208,9 @@ void copyFile() {
 
 }
 
+
+// moving file
 void moveFile() {
-    //OK
 	wchar_t source[250], destination[250];
 	char sourceChar[250], destinationChar[250];
 	printf("Введите путь к файлу (наппример: C:\\\\folder1\\\\file_1.txt): ");
@@ -228,33 +219,42 @@ void moveFile() {
 	scanf ("%s", &destinationChar);
 
 	if (MoveFile((LPSTR)sourceChar,(LPSTR)destinationChar))
-		printf("Файл перемещен");
+		printf("Файл перемещен\n");
 	else
-		printf("Произошла ошибка, файл не был перемещён %s %s", GetLastError(),"\n");
-	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-		if (MoveFileEx((LPSTR)sourceChar, (LPSTR)destinationChar, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
-			printf("Файл перемещен с заменой\n");
-		}
-		else {
-			printf("Не удалось переместить с заменой\n");
-		}
+    {
+        printf("Произошла ошибка, файл не был перемещён, возможен дубляж или отсутсвие исходного файла\n");
+    }
+	if (isDirectoryExists(destinationChar) == 1) {
+        int us = 0;
+        printf("Такой файл уже существует, заменить? (0/1): ");
+        scanf("%d", &us);
+        while ((us != 0) && (us != 1))
+        {
+            printf("Такой файл уже существует, заменить? (0/1): ");
+            scanf("%d", &us);
+        }
+        if (us == 1)
+        {
+            if (MoveFileEx((LPSTR)sourceChar, (LPSTR)destinationChar, MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING)) {
+                printf("Файл перемещен с заменой\n");
+            }
+            else {
+                printf("Не удалось переместить с заменой, отсутсвует исходный файл\n");
+            }
+        }
 	}
 }
 
-
+// showing file information
 void fileInfo() {
-    //OK
 	wchar_t fileName[250];
 	char fileCharName[250];
 	printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
 	scanf("%s", fileCharName);
 
 	DWORD fileAttributes;
-	if (fileAttributes = GetFileAttributes((LPSTR)fileCharName) == INVALID_FILE_ATTRIBUTES) {
-		printf("Ошибка: %s" , GetLastError());
-	}
-
-		printf("Аттрибуты: \n");
+        fileAttributes = GetFileAttributes((LPSTR)fileCharName);
+		printf("Атрибуты: \n");
 		if (fileAttributes & FILE_ATTRIBUTE_ARCHIVE)
 			printf("FILE_ATTRIBUTE_ARCHIVE:\nA file or directory that is an archive file or directory. Applications typically use this attribute to mark files for backup or removal.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_COMPRESSED)
@@ -267,16 +267,10 @@ void fileInfo() {
 			printf("FILE_ATTRIBUTE_ENCRYPTED:\nA file or directory that is encrypted. For a file, all data streams in the file are encrypted. For a directory, encryption is the default for newly created files and subdirectories.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_HIDDEN)
 			printf("FILE_ATTRIBUTE_HIDDEN:\nThe file or directory is hidden. It is not included in an ordinary directory listing.\n--\n");
-		//if (fileAttributes & FILE_ATTRIBUTE_INTEGRITY_STREAM)
-		//	printf("FILE_ATTRIBUTE_INTEGRITY_STREAM:\nThe directory or user data stream is configured with integrity (only supported on ReFS volumes). It is not included in an ordinary directory listing. The integrity setting persists \
-			 with the file if it's renamed. If a file is copied the destination file will have integrity set if either the source file or destination directory have integrity set.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_NORMAL)
 			printf("FILE_ATTRIBUTE_NORMAL:\nA file that does not have other attributes set. This attribute is valid only when used alone.\n");
 		if (fileAttributes & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
 			printf("FILE_ATTRIBUTE_NOT_CONTENT_INDEXED:\nThe file or directory is not to be indexed by the content indexing service.\n");
-		//if (fileAttributes & FILE_ATTRIBUTE_NO_SCRUB_DATA)
-		//	printf("FILE_ATTRIBUTE_NO_SCRUB_DATA:\nThe user data stream not to be read by the background data integrity scanner (AKA scrubber). When set on a directory it only provides inheritance. This flag is only supported on\
-				Storage Spaces and ReFS volumes. It is not included in an ordinary directory listing.\n--\n");
 		if (fileAttributes & FILE_ATTRIBUTE_OFFLINE)
 			printf("FILE_ATTRIBUTE_OFFLINE:\nThe data of a file is not available immediately. This attribute indicates that the file data is physically moved to offline storage. This attribute is used by Remote Storage,\
 				 which is the hierarchical storage management software. Applications should not arbitrarily change this attribute.\n--\n");
@@ -348,12 +342,13 @@ void fileInfo() {
 	fclose(pfile);
 }
 
+
+// changing file attributes
 void changeFileAttributes() {
-    //OK
 	char fileName[250];
-	//printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
-	//scanf("%s", &fileName);
-	DWORD attrs = GetFileAttributesA("C:\\new2\\1.txt");
+	printf("Введите имя файла (наппример: C:\\\\folder\\\\file.txt): ");
+	scanf("%s", &fileName);
+	DWORD attrs = GetFileAttributesA(fileName);
 
 	int answer;
 
@@ -361,7 +356,6 @@ void changeFileAttributes() {
 	scanf("%d", &answer);
 	if (answer == 1)
 	{
-	    printf("Q1\n");
 		attrs |= FILE_ATTRIBUTE_ARCHIVE;
 	}
 	else
@@ -369,61 +363,62 @@ void changeFileAttributes() {
 	printf("Сделать невидимым? (1/0):");
     scanf("%d", &answer);
 	if (answer == 1)
-    {printf("Q2\n");
+    {
 		attrs |= FILE_ATTRIBUTE_HIDDEN;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_HIDDEN;
 	printf("Сделать обычным? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q3\n");
+        {
 		attrs |= FILE_ATTRIBUTE_NORMAL;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_NORMAL;
 	printf("Индексировать содержание? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q4\n");
+        {
 		attrs |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
 	printf("Доступен без сети? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q5\n");
+        {
 		attrs |= FILE_ATTRIBUTE_OFFLINE;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_OFFLINE;
 	printf("Сделать доступным только для чтения? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q6\n");
+        {
 		attrs |= FILE_ATTRIBUTE_READONLY;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_READONLY;
 	printf("Сделать системным? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q7\n");
+        {
 		attrs |= FILE_ATTRIBUTE_SYSTEM;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_SYSTEM;
 	printf("Сделать временным? (1/0):");
 	scanf("%d", &answer);
 	if (answer == 1)
-        {printf("Q8\n");
+        {
 		attrs |= FILE_ATTRIBUTE_TEMPORARY;}
 	else
 		attrs &= ~FILE_ATTRIBUTE_TEMPORARY;
 
-	if (SetFileAttributesA("C:\\new2\\1.txt", attrs))
+	if (SetFileAttributesA(fileName, attrs))
 		printf("Аттрибуты успешно установленны!\n");
 	else
 		printf("Произошла ошибка, аттрибуты не были установлены!\n");
 }
 
+
+// changing of creation-time file
 void changeCreationTime() {
-    //OK
 	wchar_t filename[250];
 	char fileCharName[250];
 	printf("Введите имя файла: ");
@@ -454,25 +449,25 @@ int main() {
 		switch (notExit)
 		{
 		case 1:
-			showDrivesList(); // GetLogicalDrives, GetLogicalDriveStrings
+			showDrivesList(); // using GetLogicalDrives(), GetLogicalDriveStrings()
 			break;
 		case 2:
-			showDriveInfo(); // GetDriveType, GetVolumeInformation, GetDiskFreeSpace
+			showDriveInfo(); // using GetDriveType(), GetVolumeInformation(), GetDiskFreeSpace()
 			break;
 		case 3:
-			createFolder(); // CreateDirectory
+			createFolder(); // using CreateDirectory()
 			break;
 		case 4:
-			deleteFolder(); // RemoveDirectory
+			deleteFolder(); // using RemoveDirectory()
 			break;
 		case 5:
-			createFile();   // createFile
+			createFile();   // using createFile()
 			break;
 		case 6:
 			copyFile();
 			break;
 		case 7:
-			moveFile();     // moveFile, moveFileEx
+			moveFile();     // using moveFile(), moveFileEx()
 			break;
 		case 8:
 			fileInfo();
@@ -483,11 +478,8 @@ int main() {
 		case 10:
 			changeCreationTime();
 			break;
-		/*case 11:
-			//asyncCopyOfFile();
-			break;
 		case 0:
-			break;*/
+			break;
 		default:
 			if (notExit)
 				printf("Такого варианта нет, повторите ввод\n");
@@ -516,7 +508,7 @@ int menu()
 {
 	system("cls");
 	int point;
-
+	printf("====================МЕНЮ====================\n");
 	printf("Выберите пункт меню:\n");
     printf("1 => Вывод списка дисков\n");
     printf("2 => Вывести информацию о диске\n");
@@ -528,13 +520,12 @@ int menu()
     printf("8 => Информация о файле\n");
     printf("9 => Изменить атрибуты файла\n");
     printf("10 => Изменить время создания файла\n");
-    // printf("11 => Асинхронное копирование файла\n");
-
     printf("0 => Выход\n");
     printf("=: ");
     scanf("%i", &point);
 
     while (isTrueInput(point)) {
+        printf("====================МЕНЮ====================\n");
 		printf("Выберите пункт меню:\n");
 		printf("1 => Вывод списка дисков\n");
 		printf("2 => Вывести информацию о диске\n");
@@ -546,7 +537,6 @@ int menu()
 		printf("8 => Информация о файле\n");
 		printf("9 => Изменить атрибуты файла\n");
 		printf("10 => Изменить время создания файла\n");
-		// printf("11 => Асинхронное копирование файла\n");
 
 		printf("0 => Выход\n");
 		printf("=: ");

@@ -9,6 +9,8 @@ int showMenu() {
     cout << "1. Получить информацию о вычислительной системе" << endl;
     cout << "2. Определить статус виртуальной памяти" << endl;
     cout << "3. Определить состояние участка памяти по адресу" << endl;
+    cout << "4. Резервирование региона памяти" << endl;
+    cout << "5. Резервирование региона памяти с физической памятью" << endl;
     cout << "0. Выход" << std::endl;
     cout << "Выберите опцию: ";
     cin >> k;
@@ -81,6 +83,44 @@ void displayMemoryState() {
     }
 }
 
+void reserveMemoryRegion() {
+    uintptr_t address = 0;
+    cout << "Введите адрес начала региона: ";
+    cin >> std::hex >> address;
+
+    SIZE_T size;
+    cout << "Введите размер региона: ";
+    cin >> size;
+
+    LPVOID regionAddress = VirtualAlloc((LPVOID)address, size, MEM_RESERVE, PAGE_NOACCESS);
+    if (regionAddress) {
+        cout << "Регион памяти успешно зарезервирован" << endl;
+        cout << "Адрес начала региона: " << regionAddress << endl;
+    }
+    else {
+        cout << "Не удалось зарезервировать регион памяти" << endl;
+    }
+}
+
+void reserveMemoryRegionWithPhysicalMemory() {
+    uintptr_t address = 0;
+    cout << "Введите адрес начала региона: ";
+    cin >> std::hex >> address;
+
+    SIZE_T size;
+    cout << "Введите размер региона: ";
+    cin >> size;
+
+    LPVOID regionAddress = VirtualAlloc((LPVOID)address, size, MEM_RESERVE | MEM_PHYSICAL, PAGE_READWRITE);
+    if (regionAddress) {
+        cout << "Регион памяти с физической памятью успешно зарезервирован" << endl;
+        cout << "Адрес начала региона: " << regionAddress << endl;
+    }
+    else {
+        cout << "Не удалось зарезервировать регион памяти с физической памятью" << endl;
+    }
+}
+
 int main()
 {
     SetConsoleCP(1251);
@@ -103,6 +143,12 @@ int main()
             break;
         case 3:
             displayMemoryState();
+            break;
+        case 4:
+            reserveMemoryRegion();
+            break;
+        case 5:
+            reserveMemoryRegionWithPhysicalMemory();
             break;
         case 0:
             return 0;

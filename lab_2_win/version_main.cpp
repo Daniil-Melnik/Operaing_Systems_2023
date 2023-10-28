@@ -11,6 +11,9 @@ int showMenu() {
     cout << "3. Определить состояние участка памяти по адресу" << endl;
     cout << "4. Резервирование региона памяти" << endl;
     cout << "5. Резервирование региона памяти с физической памятью" << endl;
+    cout << "6. Запись данных в ячейки памяти" << endl;
+    cout << "7. Установка защиты доступа для региона памяти" << endl;
+    cout << "8. Возврат физической памяти и освобождение региона памяти" << endl;
     cout << "0. Выход" << std::endl;
     cout << "Выберите опцию: ";
     cin >> k;
@@ -121,6 +124,51 @@ void reserveMemoryRegionWithPhysicalMemory() {
     }
 }
 
+void writeDataToMemory() {
+    uintptr_t address = 0;
+    std::cout << "Введите адрес ячейки памяти: ";
+    std::cin >> std::hex >> address;
+
+    int data;
+    std::cout << "Введите данные для записи: ";
+
+std::cin >> data;
+
+    *(int*)address = data;
+    std::cout << "Данные успешно записаны в ячейку памяти" << std::endl;
+}
+
+void setMemoryProtection() {
+    uintptr_t address = 0;
+    std::cout << "Введите адрес региона памяти: ";
+    std::cin >> std::hex >> address;
+
+    SIZE_T size;
+    std::cout << "Введите размер региона: ";
+    std::cin >> size;
+
+    DWORD oldProtect;
+    if (VirtualProtect((LPVOID)address, size, PAGE_READONLY, &oldProtect)) {
+        std::cout << "Защита доступа для региона памяти успешно установлена" << std::endl;
+    }
+    else {
+        std::cout << "Не удалось установить защиту доступа для региона памяти" << std::endl;
+    }
+}
+
+void freeMemoryRegion() {
+    uintptr_t address = 0;
+    std::cout << "Введите адрес региона памяти: ";
+    std::cin >> std::hex >> address;
+
+    if (VirtualFree((LPVOID)address, 0, MEM_RELEASE)) {
+        std::cout << "Физическая память возвращена и регион освобожден" << std::endl;
+    }
+    else {
+        std::cout << "Не удалось освободить регион памяти" << std::endl;
+    }
+}
+
 int main()
 {
     SetConsoleCP(1251);
@@ -149,6 +197,15 @@ int main()
             break;
         case 5:
             reserveMemoryRegionWithPhysicalMemory();
+            break;
+        case 6:
+            writeDataToMemory();
+            break;
+        case 7:
+            setMemoryProtection();
+            break;
+        case 8:
+            freeMemoryRegion();
             break;
         case 0:
             return 0;

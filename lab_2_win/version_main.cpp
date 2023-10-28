@@ -1,11 +1,14 @@
 #include <iostream>
 #include <windows.h>
+#include <stdlib.h>
 
 using namespace std;
 
 int showMenu() {
     int k = 0;
-    cout << "1. Получить информацию о вычислительной системе" << std::endl;
+    cout << "1. Получить информацию о вычислительной системе" << endl;
+    cout << "2. Определить статус виртуальной памяти" << endl;
+    cout << "3. Определить состояние участка памяти по адресу" << endl;
     cout << "0. Выход" << std::endl;
     cout << "Выберите опцию: ";
     cin >> k;
@@ -51,9 +54,36 @@ void displaySystemInfo() {
     */
 }
 
+void displayMemoryStatus() {
+    MEMORYSTATUS memoryStatus;
+    GlobalMemoryStatus(&memoryStatus);
+
+    cout << "Статус виртуальной памяти:" << std::endl;
+    cout << "Доступный объем виртуальной памяти (байт): " << memoryStatus.dwAvailVirtual << endl;
+    cout << "Общий объем виртуальной памяти (байт): " << memoryStatus.dwTotalVirtual << endl;
+}
+
+void displayMemoryState() {
+    uintptr_t address;
+    cout << "Введите адрес участка памяти: ";
+    cin >> std::hex >> address;
+
+    MEMORY_BASIC_INFORMATION memoryInfo;
+    if (VirtualQuery((LPCVOID)address, &memoryInfo, sizeof(memoryInfo))) {
+        cout << "Состояние участка памяти:" << endl;
+        cout << "Базовый адрес: " << (void*)memoryInfo.BaseAddress << endl;
+        cout << "Размер: " << memoryInfo.RegionSize << endl;
+        cout << "Защита доступа: " << memoryInfo.Protect << endl;
+        cout << "Состояние: " << memoryInfo.State<< endl;
+    }
+    else {
+        cout << "Невозможно получить информацию об участке памяти" << endl;
+    }
+}
+
 int main()
 {
-    SetConsoleCP(1251); // Ввод с консоли в кодировке 1251
+    SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
     int option = 0;
@@ -62,14 +92,24 @@ int main()
     {
         option = showMenu();
 
-        cout << endl << "Выбранная опция: " << option << endl;
+        cout << endl << "Выбранная опция: " << option << endl << endl;
 
         switch(option){
         case 1:
             displaySystemInfo();
             break;
+        case 2:
+            displayMemoryStatus();
+            break;
+        case 3:
+            displayMemoryState();
+            break;
         case 0:
             return 0;
         }
+        cout << "Продолжить . . .";
+        getchar();
+        getchar();
+        system("cls");
     }
 }
